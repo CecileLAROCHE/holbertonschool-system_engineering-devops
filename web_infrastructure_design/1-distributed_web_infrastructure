@@ -1,0 +1,72 @@
+# distributed_web_infrastructure
+
+## Overview
+
+A user wants to access the website www.foobar.com
+.
+The request is resolved by DNS and then handled by a distributed web infrastructure designed to improve availability compared to a single-server setup.
+
+## Servers and redundancy
+
+This infrastructure uses two servers.
+Each server contains:
+
+a web server (Nginx),
+
+an application server,
+
+a set of application files (the code base),
+
+a MySQL database.
+
+Both servers are identical, which provides redundancy.
+If one server fails, the other one can still handle incoming requests.
+
+## Load balancer
+
+A load balancer (HAProxy) is added in front of the two servers.
+Its role is to distribute incoming traffic between the servers in order to improve availability and handle more requests than a single server could.
+
+### Load balancing algorithm
+
+The load balancer can be configured with a round-robin algorithm.
+This algorithm distributes requests sequentially, sending each new request to the next available server.
+
+### Active-Active setup
+
+The load balancer is configured in an active-active setup.
+This means that both servers actively handle traffic at the same time.
+
+In contrast, in an active-passive setup, only one server handles requests while the second server remains idle and is used only if the first one fails.
+
+## Database cluster (MySQL Master-Replica)
+
+The databases are organized in a Primary-Replica (Master-Slave) cluster.
+This cluster uses replication to keep data synchronized between the databases.
+
+The Primary (Master) database node handles both read and write operations.
+The Replica (Slave) database node only handles read operations and continuously replicates data from the Primary node.
+
+The application writes data only to the Primary database to ensure data consistency.
+
+## Issues and limitations
+
+### Single Points of Failure (SPOF)
+
+Even with two servers, this infrastructure still has single points of failure.
+The load balancer itself is a SPOF, because there is only one load balancer and no redundancy for it.
+
+### Security issues
+
+There is no firewall protecting the servers, which exposes them directly to the internet and increases security risks.
+
+Traffic between the user and the infrastructure is unencrypted because HTTPS is not configured, allowing sensitive data to potentially be intercepted.
+
+## Monitoring
+
+There is no monitoring system in place.
+As a result, server failures or performance issues cannot be detected automatically.
+
+## Diagram
+
+The repository contains a link to a diagram representing this infrastructure.

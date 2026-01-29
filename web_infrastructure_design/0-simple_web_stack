@@ -1,1 +1,37 @@
-.
+# Simple web stack
+
+## The server
+
+It is generally located in a data center, in the form of a physical machine or a virtual machine
+
+It contains an OS (Ubuntu for example) which allows
+The server runs an operating system, such as Linux, which allows applications and services to run.
+
+## DNS
+
+The DNS translate a domain name into an IP address.
+The record `www.foobar.com` is an A record because it resolves to an IPv4 address (8.8.8.8).
+
+## Web server
+
+The web server handle HTTP requests and serve static content (HTML, CSS...)
+
+## Application server
+
+The application server is responsible for computing dynamic content and executing the application logic.
+
+## Database
+
+The database stores the data, ( user information and persistent content..)
+
+## Communication
+
+The server communicates with the user’s computer using a network using TCP/IP.
+
+## Limitations / issues
+
+**Downtime :** The website would be temporarily unavailable during maintenance, such as when deploying new code that requires restarting the web server.
+
+**SPOF :** This infrastructure has a single point of failure because all components are hosted on a single server and there is no redundancy.
+
+**Scalabilité :** This infrastructure cannot scale and would not be able to handle traffic exceeding the server’s capacity.
