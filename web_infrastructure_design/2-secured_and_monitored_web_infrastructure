@@ -1,0 +1,71 @@
+# Secured and Monitored Web Infrastructure
+
+## Overview
+
+A user wants to access the website **www.foobar.com**.  
+The request is resolved by DNS and then handled by a **secured and monitored distributed web infrastructure**.  
+This infrastructure builds on the previous distributed setup by adding **security, encrypted traffic, and monitoring**.
+
+## Servers and redundancy
+
+This infrastructure uses **three servers**:
+
+1. **Server 1**: Nginx web server, application server, application code, MySQL Primary database.  
+2. **Server 2**: Nginx web server, application server, application code, MySQL Replica database.  
+3. **Server 3**: Monitoring agent and firewall (single component).
+
+Servers 1 and 2 are identical to provide **redundancy**.  
+If one server fails, the other continues to handle traffic.
+
+## Load balancer cluster
+
+A **cluster of two HAProxy load balancers** is deployed in front of the servers.  
+Its role is to **distribute incoming traffic** between the two main servers and provide **high availability**.
+
+The load balancers are configured in an **active-active setup**.  
+If one load balancer fails, the other automatically takes over traffic distribution.
+
+## Firewalls
+
+Each server has a **firewall** installed to control incoming and outgoing traffic.  
+Firewalls protect the servers by filtering unauthorized access and reducing security risks.
+
+## HTTPS and SSL
+
+Traffic between the user and the load balancers is **encrypted with HTTPS** using an **SSL certificate** for `www.foobar.com`.  
+HTTPS ensures that all data sent between the user and the servers is encrypted and secure.
+
+## Monitoring
+
+A **monitoring agent** is installed on each server to collect metrics, logs, and system performance data.  
+Monitoring tools such as Sumologic gather data about CPU usage, memory, disk usage, and web server activity.
+
+To monitor **QPS (queries per second)** on the web servers, the monitoring agents collect and analyze **HTTP access logs** from Nginx, which report each incoming request.
+
+## Database cluster (MySQL Master-Replica)
+
+Server 1 contains the **Primary (Master)** MySQL database, which handles **both reads and writes**.  
+Server 2 contains the **Replica (Slave)** database, which only handles **read operations**.  
+
+Data is replicated from the Primary to the Replica to ensure consistency and availability.
+
+## Issues and limitations
+
+### SSL termination
+
+SSL is terminated at the load balancer.  
+Traffic between the load balancer and the backend servers is **unencrypted**, which could expose sensitive data if the internal network is compromised.
+
+### Single MySQL write node
+
+Only the Primary database can handle write operations.  
+If the Primary fails, **write operations are unavailable**, creating a potential SPOF for database writes.
+
+### Coupling of components
+
+Servers 1 and 2 contain all major components (Web, App, DB).  
+This **tight coupling** can reduce scalability and make it harder to optimize or maintain each component independently.
+
+## Diagram
+
+The repository contains a link to a diagram representing this secured and monitored infrastructure.
