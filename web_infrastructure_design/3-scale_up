@@ -1,0 +1,49 @@
+# Scaled Up Web Infrastructure
+
+## Overview
+
+A user wants to access the website `www.foobar.com``.  
+The request is resolved by DNS and then handled by a **scaled-up distributed web infrastructure**.  
+This infrastructure builds on the previous setup by **separating components onto dedicated servers** for better scalability and performance.
+
+## Servers and separation of components
+
+This infrastructure uses **four servers**:
+
+1. **Server 1**: Nginx Web Server — handles all incoming HTTP/HTTPS requests.  
+2. **Server 2**: Application Server — executes the application logic and generates dynamic content.  
+3. **Server 3**: Database Server — MySQL database for storing persistent data.  
+4. **Server 4**: Additional server for scaling or monitoring purposes.
+
+Separating each component allows independent scaling.  
+For example, if the web server receives more traffic, additional web servers can be added without affecting the application or database servers.
+
+## Load balancer cluster
+
+A **cluster of two HAProxy load balancers** is deployed in front of the web server and other servers.  
+Its role is to **distribute incoming traffic** and ensure high availability.  
+
+The load balancers are configured in an **active-active setup**, so that both handle requests simultaneously.  
+If one load balancer fails, the other automatically takes over traffic distribution.
+
+## Component workflow
+
+- **User → DNS → Load Balancer → Web Server → Application Server → Database**  
+- The web server handles static content and forwards dynamic requests to the application server.  
+- The application server queries the database as needed to generate dynamic content.
+
+## Advantages
+
+- **Independent scaling**: Each component can be scaled horizontally (add more servers) without affecting the others.  
+- **Improved performance**: Dedicated servers reduce resource contention between components.  
+- **Redundancy at load balancer level**: Cluster ensures traffic distribution even if one LB fails.
+
+## Remaining limitations
+
+- The load balancers, while clustered, remain a **single point of failure** if the cluster is misconfigured.  
+- The database still has a **Primary node for writes**, which can become a bottleneck or SPOF.  
+- Managing more servers increases **operational complexity** and requires more monitoring.
+
+## Diagram
+
+The repository contains a link to a diagram representing this scaled-up infrastructure.
